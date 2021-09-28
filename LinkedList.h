@@ -4,21 +4,22 @@
 void insert();
 void delete();
 
-struct node
+struct tree_prop
 {
-        int data;
-        struct node *next;
+    int x, y, h, d, c, p;
+    int value, weight, price;
+    struct tree_prop *next;
 };
-struct node *head = NULL;
+struct tree_prop *head = NULL;
 
-void insert(struct node *newnode)
+void insert(struct tree_prop *newnode)
 {
-    struct node *tail;
+    struct tree_prop *tail;
+    newnode -> next = NULL;
 
     if(head == NULL)
     {
         head = newnode;
-        newnode -> next = NULL;
     }
     else
     {
@@ -28,14 +29,13 @@ void insert(struct node *newnode)
             tail = tail->next ;
         }
         tail->next = newnode;
-        newnode -> next = NULL;
     }
 }
 
 void delete(int pos)
 {
     int i;
-    struct node *position,*positionprevnode;
+    struct tree_prop *position,*positionprevnode;
     if(head==NULL)
     {
         exit(0);
@@ -51,11 +51,11 @@ void delete(int pos)
         }
         else
         {
-            position=head;
+            position = head;
             for(i=0;i<pos;i++)
             {
                 positionprevnode = position;
-                position=position->next;
+                position = position->next;
                 if(position==NULL)
                 {
                     return;
@@ -65,4 +65,28 @@ void delete(int pos)
             free(position);
         }
     }
+}
+
+// display function
+void display()
+{
+    struct tree_prop *traversal;
+    if(head==NULL)
+    {
+        printf("\n List is empty:\n");
+        return;
+    }
+    else
+    {
+        traversal=head;
+        printf("\nThe List elements are:\n");
+        while(traversal -> next != NULL)
+        {
+                printf("%d\n",traversal->x);
+                traversal=traversal->next ;
+        }
+        printf("%d\n",traversal->x); //To print the last element before it moves back to head
+        return;
+    }
+
 }
