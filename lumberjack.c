@@ -7,8 +7,8 @@ int main()
 {
     struct tree_prop *tree_prop;
 	int time_limit, grid_size,no_of_trees;
-	int i;
-
+	int i, total_price = 0, current_x=0, current_y = 0;
+    struct tree_prop* mini;
     // taking time limit, grid size and number of trees as input
 	scanf("%d %d %d", &time_limit, &grid_size, &no_of_trees);
 
@@ -23,33 +23,42 @@ int main()
 		tree_prop->price = tree_prop->value;
         insert(tree_prop);
 	}
-    display();
 
-    printf("********\n");
     int time = 0;
     while (time < time_limit)
     {
-    	int min, total_price = 0, position;
-    	min = head->x + head->y;
+    	int min, position;
+    	min = head->x + head->y - current_x - current_y;
+        tree_prop = head;
+        mini = head;
 
     	//To find the nearest tree
     	for(i=0;i<no_of_trees;i++)
         {
             if(tree_prop->x + tree_prop->y < min)
             {
+                mini = (struct tree_prop*)malloc(sizeof(struct tree_prop));
+                mini = tree_prop;
                 min = tree_prop->x + tree_prop->y;
                 position = i;
-                tree_prop = tree_prop -> next;
+                printf("%d %d\n",mini->x,mini->y);
             }
+            tree_prop = tree_prop -> next;
         }
-
-        //Checking whether the time limit given is sufficient to go to that tree and cut that tree
-        if(tree_prop->x + tree_prop->y + tree_prop->d < time_limit)
+        time = time + min;
+        // Checking whether the time limit given is sufficient to go to that tree and cut that tree
+        if(time + mini->d < time_limit)
         {
-            total_price = total_price + tree_prop->price;
+            total_price = total_price + mini->price;
+            time = time + mini->d;
+            current_x = mini->x;
+            current_y = mini->y;
+            //printf(" time : %d profit : %d\n",time, total_price);
+            delete(position);
+            no_of_trees--;
         }
-
     }
+    //printf("%d\n", total_price);
 	return 0;
 
 }
