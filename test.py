@@ -1,4 +1,4 @@
-# taking input
+
 time_limit, grid_size, no_of_trees = map(int,input().split())
 
 trees = []
@@ -17,9 +17,18 @@ while time < time_limit:
     time += trees[0]["position"] - current_x - current_y
 
     if time + trees[0]["d"] < time_limit:
-        total_price += trees[0]["price"]
+        total_price += trees[0]["value"]
         time += trees[0]["d"]
+        if current_x < trees[0]["x"]:
+            print("move right\n"* (trees[0]["x"]-current_x ),end="")
+        else:
+            print("move left\n"* (current_x-trees[0]["x"]),end="")
+
+        if current_y < trees[0]["y"]:
+            print("move up\n"* (trees[0]["y"]-current_y ))
+        else:
+            print("move down\n"* (current_y-trees[0]["y"]))
         current_x = trees[0]["x"]
         current_y = trees[0]["y"]
-        print("total_price:", total_price)
-        trees.remove(trees[0])
+
+    trees.remove(trees[0])
