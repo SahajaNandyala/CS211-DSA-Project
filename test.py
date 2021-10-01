@@ -1,4 +1,3 @@
-
 # taking input
 time_limit, grid_size, no_of_trees = map(int,input().split())
 
@@ -44,8 +43,47 @@ def upProfit(near_tree):
             temp += [uptrees[0]]
             temp1 = upProfit(uptrees[0])
             profit += temp1
-
     return profit
+
+#downProfit function
+def downProfit(near_tree):
+    near_tree = trees[0]
+    profit = 0
+    downtrees = sorted([i for i in trees if near_tree["x"] == i["x"] and near_tree["y"] > i["y"]],key=lambda j: j["y"])
+    if len(downtrees) != 0:
+        if near_tree["h"] > abs(downtrees[0]["position"] - near_tree["position"]) and near_tree["weight"] > downtrees[0]["weight"]:
+            profit += downtrees[0]["price"]
+            temp += [downtrees[0]]
+            temp1 = downProfit(downtrees[0])
+            profit += temp1
+    return profit
+
+#rightProfit function
+def rightProfit(near_tree):
+    near_tree = trees[0]
+    profit = 0
+    righttrees = sorted([i for i in trees if near_tree["y"] == i["y"] and near_tree["x"] < i["x"]],key=lambda j: j["y"])
+    if len(righttrees) != 0:
+        if near_tree["h"] > abs(righttrees[0]["position"] - near_tree["position"]) and near_tree["weight"] > righttrees[0]["weight"]:
+            profit += righttrees[0]["price"]
+            temp += [righttrees[0]]
+            temp1 = rightProfit(righttrees[0])
+            profit += temp1
+    return profit
+
+#leftProfit function
+def leftProfit(near_tree):
+    near_tree = trees[0]
+    profit = 0
+    lefttrees = sorted([i for i in trees if near_tree["y"] == i["y"] and near_tree["x"] > i["x"]],key=lambda j: j["y"])
+    if len(lefttrees) != 0:
+        if near_tree["h"] > abs(lefttrees[0]["position"] - near_tree["position"]) and near_tree["weight"] > lefttrees[0]["weight"]:
+            profit += lefttrees[0]["price"]
+            temp += [lefttrees[0]]
+            temp1 = leftProfit(lefttrees[0])
+            profit += temp1
+    return profit
+
 
 
 # taking input of properties for each tree in a list of dicts
