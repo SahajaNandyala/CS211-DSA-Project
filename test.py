@@ -5,22 +5,29 @@ trees = []
 track = []
 
 # print Path function
-def path(direction):
-    if (direction == 1) : print('cut down')
-    elif (direction == 0) : print('cut up')
-    elif (direction == 2) : print('cut right')
-    elif (direction == 3) : print('cut left')
-    elif (direction == -1) : return
+def path(x_path,y_path,curr_x,curr_y):
+    if curr_x < x_path:
+        print("move right\n"* (x_path-curr_x ),end="")
+    else:
+        print("move left\n"* (curr_x-x_path),end="")
+
+    if curr_y < y_path:
+        print("move up\n"* (y_path-curr_y ),end="")
+    else:
+        print("move down\n"* (curr_y - y_path),end="")
+
+
 # calculate_profit function
 def cal_profit(near_tree):
     uProfit = rProfit = dProfit = lProfit = 0
-    currentProfit = -1
+    currentProfit = 0
     direction = -1
+
     # calculating upprofit
     temp,uProfit = upProfit(near_tree)
     currentProfit = uProfit
     track = temp
-    if uProfit != 0 :
+    if uProfit != 0:
         direction = 0
 
     temp,dProfit = downProfit(near_tree)
@@ -40,8 +47,8 @@ def cal_profit(near_tree):
         currentProfit = lProfit
         track = temp
         direction = 3
-    path(direction)
-    return track,currentProfit
+
+    return direction,track,currentProfit
 
 #upProfit function
 def upProfit(near_tree):
@@ -90,11 +97,11 @@ def rightProfit(near_tree):
         else:return 0,0
     else: return 0,0
 
-#leftProfit function
+# leftProfit function
 def leftProfit(near_tree):
     temp = []
     profit = 0
-    lefttrees = sorted([i for i in trees if near_tree["y"] == i["y"] and near_tree["x"] > i["x"]],key=lambda j: j["x"])
+    lefttrees = sorted([i for i in trees if near_tree["y"] == i["y"] and near_tree["x"] > i["x"]],key = lambda j: j["x"])
     if len(lefttrees) != 0:
         if near_tree["h"] > abs(lefttrees[0]["position"] - near_tree["position"]) and near_tree["weight"] > lefttrees[0]["weight"]:
             profit += lefttrees[0]["value"]
@@ -118,25 +125,39 @@ trees.sort(key=lambda x:x["position"])
 time = 0
 total_price = 0
 current_x = current_y = 0
-
+t = time_limit
 # moving
-while time < time_limit:
-    a,final_profit = cal_profit(trees[0])
+while time < time_limit and len(trees)>0:
+    direction,a,final_profit = cal_profit(trees[0])
     #print(a)
     time += trees[0]["position"] - current_x - current_y
 
     if time + trees[0]["d"] < time_limit:
         total_price += trees[0]["value"] + final_profit
         time += trees[0]["d"]
-        if current_x < trees[0]["x"]:
-            print("move right\n"* (trees[0]["x"]-current_x ),end="")
-        else:
-            print("move left\n"* (current_x-trees[0]["x"]),end="")
 
-        if current_y < trees[0]["y"]:
-            print("move up\n"* (trees[0]["y"]-current_y ),end="")
-        else:
-            print("move down\n"* (current_y-trees[0]["y"]),end="")
+        if current_x < trees[0]["x"] and t >= 0:
+            print("move right\n"*min(time,trees[0]["x"]-current_x),end="")
+            t -= trees[0]["x"]-current_x
+        elif current_x > trees[0]["x"] and t >= 0:
+            print("move left\n"* min(t,current_x-trees[0]["x"]),end="")
+            t -= current_x-trees[0]["x"]
+
+        if current_y < trees[0]["y"] and t >= 0:
+            print("move up\n"* min(t,trees[0]["y"]-current_y ),end="")
+            t -= trees[0]["y"]-current_y
+        elif current_y > trees[0]["y"] and t >= 0:
+            print("move down\n"* min(t,current_y-trees[0]["y"]),end="")
+            t -= current_y-trees[0]["y"]
+#-----------------
+        if direction == 0:
+            print("cut up")
+        elif abs(direction) == 1:
+            print("cut down")
+        elif direction == 2:
+            print("cut right")
+        elif direction == 3:
+            print("cut left")
 
         current_x = trees[0]["x"]
         current_y = trees[0]["y"]
@@ -145,7 +166,3 @@ while time < time_limit:
     if a != 0 :
         for i in a:
             trees.remove(i)
-print(trees)
-
-    #print(final_profit,total_price)
-    #if near_tree["weight"] > x[0]["weight"] and near_tree["h"]>x[0]["h"]:
