@@ -5,20 +5,23 @@ trees = []
 track = []
 
 # print Path function
-def path(current,track):
-
-
-
+def path(direction):
+    if (direction == 1) : print('cut down')
+    elif (direction == 0) : print('cut up')
+    elif (direction == 2) : print('cut right')
+    elif (direction == 3) : print('cut left')
+    elif (direction == -1) : return
 # calculate_profit function
 def cal_profit(near_tree):
     uProfit = rProfit = dProfit = lProfit = 0
-    currentProfit = 0
-
+    currentProfit = -1
+    direction = -1
     # calculating upprofit
     temp,uProfit = upProfit(near_tree)
     currentProfit = uProfit
     track = temp
-    direction = 0
+    if uProfit != 0 :
+        direction = 0
 
     temp,dProfit = downProfit(near_tree)
     if dProfit > currentProfit:
@@ -30,12 +33,14 @@ def cal_profit(near_tree):
     if rProfit > currentProfit:
         currentProfit = rProfit
         track = temp
+        direction = 2
 
     temp,lProfit = leftProfit(near_tree)
     if lProfit > currentProfit:
         currentProfit = lProfit
         track = temp
-
+        direction = 3
+    path(direction)
     return track,currentProfit
 
 #upProfit function
@@ -123,7 +128,7 @@ while time < time_limit:
     if time + trees[0]["d"] < time_limit:
         total_price += trees[0]["value"] + final_profit
         time += trees[0]["d"]
-        '''if current_x < trees[0]["x"]:
+        if current_x < trees[0]["x"]:
             print("move right\n"* (trees[0]["x"]-current_x ),end="")
         else:
             print("move left\n"* (current_x-trees[0]["x"]),end="")
@@ -134,7 +139,7 @@ while time < time_limit:
             print("move down\n"* (current_y-trees[0]["y"]),end="")
 
         current_x = trees[0]["x"]
-        current_y = trees[0]["y"]'''
+        current_y = trees[0]["y"]
 
         trees.remove(trees[0])
     if a != 0 :
