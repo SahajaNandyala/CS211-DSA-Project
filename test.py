@@ -146,14 +146,14 @@ while time < time_limit and len(trees)>0:
         elif direction == 3 and t >= 0:
             print("cut left")
             t -= trees[0]["d"]
-
+            
+        time += trees[0]["position"] - current_x - current_y
 
         current_x = trees[0]["x"]
         current_y = trees[0]["y"]
 
         trees.remove(trees[0])
 
-    time += trees[0]["position"] - current_x - current_y
 
     if a != 0 :
         for i in a:
