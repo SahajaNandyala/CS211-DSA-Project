@@ -2,9 +2,8 @@
 time_limit, grid_size, no_of_trees = map(int,input().split())
 
 trees = []
-track = []
 
-#calculate_profit function
+# calculate_profit function
 def cal_profit(near_tree):
     uProfit = rProfit = dProfit = lProfit = 0
     currentProfit = 0
@@ -13,29 +12,28 @@ def cal_profit(near_tree):
     # calculating upprofit
     temp,uProfit = upProfit(near_tree)
     currentProfit = uProfit
-    track = temp
     if uProfit != 0:
         direction = 0
 
+    # calculating downProfit
     temp,dProfit = downProfit(near_tree)
     if dProfit > currentProfit:
         currentProfit = dProfit
-        track = temp
         direction = 1
 
+    # calculating rightProfit
     temp,rProfit = rightProfit(near_tree)
     if rProfit > currentProfit:
         currentProfit = rProfit
-        track = temp
         direction = 2
 
+    # calculating leftProfit
     temp,lProfit = leftProfit(near_tree)
     if lProfit > currentProfit:
         currentProfit = lProfit
-        track = temp
         direction = 3
 
-    return direction,track,currentProfit
+    return direction,currentProfit
 
 #upProfit function
 def upProfit(near_tree):
@@ -43,7 +41,6 @@ def upProfit(near_tree):
     profit = 0
     uptrees = sorted([i for i in trees if near_tree["x"] == i["x"] and near_tree["y"] < i["y"]],key=lambda j: j["y"])
     if len(uptrees) != 0:
-        #print("i")
         if near_tree["h"] > abs(uptrees[0]["position"] - near_tree["position"]) and near_tree["weight"] > uptrees[0]["weight"]:
             profit += uptrees[0]["value"]
             temp += [uptrees[0]]
@@ -106,14 +103,8 @@ for i in range(no_of_trees):
     x, y, h, d, c, p = map(int,input().split())
     trees += [{"position":x+y,"x":x,"y":y,"h":h,"d":d,"c":c,"p":p, "value":p*h*d, "weight":c*d*h, "full_profit":0}]
 
-# sorting based on position of tree from origin
-
-
-for i in trees:
-    full_profit = cal_profit(i)
-    i["full_profit"] = full_profit[2]
-
-trees.sort(key=lambda x:(x["position"],-(x["full_profit"]+x["value"]),-x["value"]))
+# sorting all tree values based on position
+trees.sort(key=lambda x:(x["position"]))
 
 time = 0
 total_price = 0
@@ -122,8 +113,9 @@ t = time_limit
 
 # moving
 if time < time_limit and len(trees)>0:
-    direction,a,final_profit = cal_profit(trees[0])
+    direction,final_profit = cal_profit(trees[0])
 
+    # printing directions to move
     if current_x < trees[0]["x"] and t >= 0:
         print("move right\n"*min(t,trees[0]["x"]-current_x),end="")
         t -= trees[0]["x"]-current_x
@@ -136,7 +128,8 @@ if time < time_limit and len(trees)>0:
     elif current_y > trees[0]["y"] and t >= 0:
         print("move down\n"* min(t,current_y-trees[0]["y"]),end="")
         t -= current_y-trees[0]["y"]
-#-----------------
+
+#-------------------------printing direction to cut tree------------------------
     if direction == 0 and t >= 0:
         print("cut up")
         t -= trees[0]["d"]
