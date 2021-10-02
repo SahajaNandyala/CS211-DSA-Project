@@ -4,19 +4,6 @@ time_limit, grid_size, no_of_trees = map(int,input().split())
 trees = []
 track = []
 
-# print Path function
-def path(x_path,y_path,curr_x,curr_y):
-    if curr_x < x_path:
-        print("move right\n"* (x_path-curr_x ),end="")
-    else:
-        print("move left\n"* (curr_x-x_path),end="")
-
-    if curr_y < y_path:
-        print("move up\n"* (y_path-curr_y ),end="")
-    else:
-        print("move down\n"* (curr_y - y_path),end="")
-
-
 # calculate_profit function
 def cal_profit(near_tree):
     uProfit = rProfit = dProfit = lProfit = 0
@@ -129,20 +116,17 @@ t = time_limit
 # moving
 while time < time_limit and len(trees)>0:
     direction,a,final_profit = cal_profit(trees[0])
-    #print(a)
-    time += trees[0]["position"] - current_x - current_y
 
-    if time + trees[0]["d"] < time_limit:
+    if time  < time_limit:
         total_price += trees[0]["value"] + final_profit
         time += trees[0]["d"]
 
         if current_x < trees[0]["x"] and t >= 0:
-            print("move right\n"*min(time,trees[0]["x"]-current_x),end="")
+            print("move right\n"*min(t,trees[0]["x"]-current_x),end="")
             t -= trees[0]["x"]-current_x
         elif current_x > trees[0]["x"] and t >= 0:
             print("move left\n"* min(t,current_x-trees[0]["x"]),end="")
             t -= current_x-trees[0]["x"]
-
         if current_y < trees[0]["y"] and t >= 0:
             print("move up\n"* min(t,trees[0]["y"]-current_y ),end="")
             t -= trees[0]["y"]-current_y
@@ -150,19 +134,27 @@ while time < time_limit and len(trees)>0:
             print("move down\n"* min(t,current_y-trees[0]["y"]),end="")
             t -= current_y-trees[0]["y"]
 #-----------------
-        if direction == 0:
+        if direction == 0 and t >= 0:
             print("cut up")
-        elif abs(direction) == 1:
+            t -= trees[0]["d"]
+        elif abs(direction) == 1 and t >= 0:
             print("cut down")
-        elif direction == 2:
+            t -= trees[0]["d"]
+        elif direction == 2 and t >= 0:
             print("cut right")
-        elif direction == 3:
+            t -= trees[0]["d"]
+        elif direction == 3 and t >= 0:
             print("cut left")
+            t -= trees[0]["d"]
+
 
         current_x = trees[0]["x"]
         current_y = trees[0]["y"]
 
         trees.remove(trees[0])
+
+    time += trees[0]["position"] - current_x - current_y
+
     if a != 0 :
         for i in a:
             trees.remove(i)
