@@ -156,5 +156,5 @@ while time < time_limit and len(trees)>0:
 
 
     if a != 0 :
-        for i in a:
-            trees.remove(i)
+        for j in a:
+            trees.remove(j)
