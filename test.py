@@ -3,7 +3,7 @@ time_limit, grid_size, no_of_trees = map(int,input().split())
 
 trees = []
 track = []
-
+blocked_paths = []
 # calculate_profit function
 def cal_profit(near_tree):
     uProfit = rProfit = dProfit = lProfit = 0
@@ -14,7 +14,7 @@ def cal_profit(near_tree):
     temp,uProfit = upProfit(near_tree)
     currentProfit = uProfit
     track = temp
-    if uProfit != 0:
+    if uProfit != 0 :
         direction = 0
 
     temp,dProfit = downProfit(near_tree)
@@ -112,13 +112,11 @@ def leftProfit(near_tree):
 for i in range(no_of_trees):
     x, y, h, d, c, p = map(int,input().split())
     trees += [{"position":x+y,"x":x,"y":y,"h":h,"d":d,"c":c,"p":p, "value":p*h*d, "weight":c*d*h, "full_profit":0}]
-
 # sorting based on position of tree from origin
 
 for i in trees:
     full_profit = cal_profit(i)
     i["full_profit"] = full_profit[2]
-
 
 time = 0
 total_price = 0
@@ -127,11 +125,18 @@ t = time_limit
 
 # moving
 while time < time_limit and len(trees)>0:
+
+    # sorting
     trees.sort(key=lambda x:((abs(x["x"]-current_x) + abs(x["y"]-current_y)),-(x["full_profit"]+x["value"]),-x["value"]))
-    direction,a,final_profit = cal_profit(trees[0])
+
+    #calling cal_profit function for nearest tree
+    direction,domino_effect_tree,final_profit = cal_profit(trees[0])
+
+    if domino_effect_tree == 0:
+        domino_effect_tree = []
+    domino_effect_tree = [trees[0]] + domino_effect_tree
 
     if time  < time_limit:
-        total_price += trees[0]["value"] + final_profit
         time += trees[0]["d"]
 
         if current_x < trees[0]["x"] and min(t,trees[0]["x"]-current_x) >= 0:
@@ -149,21 +154,26 @@ while time < time_limit and len(trees)>0:
         elif current_y > trees[0]["y"] and min(t,current_y-trees[0]["y"]) >= 0:
             print("move down\n"* min(t,current_y-trees[0]["y"]),end="")
             t -= current_y-trees[0]["y"]
+
 #-----------------
         if direction == 0 and (t - trees[0]["d"]) >= 0 :
             print("cut up")
+            blocked_paths += [[(trees[0]["x"],trees[0]["y"]),(domino_effect_tree[-1]["x"],domino_effect_tree[-1]["y"]+domino_effect_tree[-1]["h"])]]
             t -= trees[0]["d"]
 
         elif abs(direction) == 1 and (t - trees[0]["d"]) >= 0:
             print("cut down")
+            blocked_paths += [[(trees[0]["x"],trees[0]["y"]),(domino_effect_tree[-1]["x"],domino_effect_tree[-1]["y"]-domino_effect_tree[-1]["h"])]]
             t -= trees[0]["d"]
 
         elif direction == 2 and (t - trees[0]["d"]) >= 0:
             print("cut right")
+            blocked_paths += [[(trees[0]["x"],trees[0]["y"]),(domino_effect_tree[-1]["x"]+domino_effect_tree[-1]["h"],domino_effect_tree[-1]["y"])]]
             t -= trees[0]["d"]
 
         elif direction == 3 and (t - trees[0]["d"]) >= 0:
             print("cut left")
+            blocked_paths += [[(trees[0]["x"],trees[0]["y"]),(domino_effect_tree[-1]["x"]-domino_effect_tree[-1]["h"],domino_effect_tree[-1]["y"])]]
             t -= trees[0]["d"]
 
         time += trees[0]["position"] - current_x - current_y
@@ -171,9 +181,8 @@ while time < time_limit and len(trees)>0:
         current_x = trees[0]["x"]
         current_y = trees[0]["y"]
 
-        trees.remove(trees[0])
+        total_price += trees[0]["value"] + final_profit
 
-
-    if a != 0 :
-        for i in a:
+        for i in domino_effect_tree:
             trees.remove(i)
+print(blocked_paths)
