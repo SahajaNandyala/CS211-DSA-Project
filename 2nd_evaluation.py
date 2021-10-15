@@ -11,24 +11,24 @@ rProfit=0
 dProfit=0
 
 # calculate_profit function
-def cal_profit():
+def cal_profit(tree):
     currentProfit = 0
 
     # calculating upprofit
-    upProfit(trees[0])
+    upProfit(tree)
     currentProfit = uProfit
     direction = 0
-    downProfit(trees[0])
+    downProfit(tree)
     if dProfit > currentProfit:
         currentProfit = dProfit
         direction = 1
 
-    rightProfit(trees[0])
+    rightProfit(tree)
     if rProfit > currentProfit:
         currentProfit = rProfit
         direction = 2
 
-    leftProfit(trees[0])
+    leftProfit(tree)
     if lProfit > currentProfit:
         currentProfit = lProfit
         direction = 3
@@ -84,7 +84,10 @@ def path():
     for i in trees:
         if abs(i["x"]-current_x)+abs(i["y"]-current_y)+i["d"] <= t:
             list += [i]
-    list.sort(key = lambda x: (-(x["value"]/(abs(x["x"]-current_x)+abs(x["y"]-current_y))),(x["x"]-current_x)**2 + (x["y"]-current_y)**2,-(x["value"])))
+    # list.sort(key = lambda x: (-(x["value"]/(abs(x["x"]-current_x)+abs(x["y"]-current_y))),(x["x"]-current_x)**2 + (x["y"]-current_y)**2,-(x["value"]))) --> 60.12 score
+    # list.sort(key = lambda x: (-(x["value"]),-(x["value"]/(abs(x["x"]-current_x)+abs(x["y"]-current_y))))) --> 34.35 Score --> never use it
+    # list.sort(key=lambda x:((abs(x["x"]-current_x)+abs(x["y"]-current_y)),-(x["value"] + x["full_profit"])/(abs(x["x"]-current_x)+abs(x["y"]-current_y)+x["d"]))) --> 34.38
+    list.sort(key = lambda x: (-(x["value"]/(abs(x["x"]-current_x)+abs(x["y"]-current_y)+x["d"])),(x["x"]-current_x)**2 + (x["y"]-current_y)**2,-(x["value"])))
     return list
 
 #-----------------------------------------------------------------------------------------------------------------
@@ -94,22 +97,42 @@ for i in range(no_of_trees):
     x, y, h, d, c, p = map(int,input().split())
     trees += [{"position":x+y,"x":x,"y":y,"h":h,"d":d,"c":c,"p":p, "value":p*h*d, "weight":c*d*h}]
 
-# sorting based on position of tree from origin
-
-
 time = 0
 total_price = 0
 current_x = current_y = 0
 t = time_limit
 count = 0
 
-trees.sort(key = lambda x: (x["x"]-current_x)**2 + (x["y"]-current_y)**2)
+# list_trees = []
+#
+# for i in trees:
+#     if abs(i["x"]-current_x)+abs(i["y"]-current_y)+i["d"] <= t:
+#         list_trees += [i]
+#
+# trees = list_trees
+
+# sorting based on position of tree from origin
+# for i in trees:
+#     full_profit = cal_profit(i)
+#     i["full_profit"] = full_profit[1]
+#     temp1.clear()
+#     temp2.clear()
+#     temp3.clear()
+#     temp4.clear()
+#     uProfit = 0
+#     lProfit = 0
+#     rProfit = 0
+#     dProfit = 0
+
+
+
+trees.sort(key = lambda x: abs(x["x"]-current_x) + abs(x["y"]-current_y))
 
 # moving
 while time <= time_limit and len(trees)>1:
 
     if time  <= time_limit:
-        direction,final_profit = cal_profit()
+        direction,final_profit = cal_profit(trees[0])
 
         if current_x < trees[0]["x"]:
             print("move right\n"* min(t,trees[0]["x"]-current_x),end="")
@@ -127,7 +150,7 @@ while time <= time_limit and len(trees)>1:
             print("move down\n"* min(t,current_y-trees[0]["y"]),end="")
             t -= current_y-trees[0]["y"]
 
-#-------------------cutting trees ------------
+#------------------- cutting trees ------------
 
         if direction == 0 and (t - trees[0]["d"]) >= 0 :
             print("cut up")
