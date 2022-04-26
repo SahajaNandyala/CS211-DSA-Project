@@ -23,7 +23,7 @@ On the output specify a list of moves (using move prefix) and cuts (using cut pr
 
 For each test case, your program will receive the score equal to the total value of trees that were cut down by the lumberjack. You should maximize this value. For each test with n <= 25, your program should execute below 1 second, for 25 < n <= 100, your program should execute below 10 seconds, and for n > 100 your program should execute below 60 seconds. For each test the available memory is limited to 1 GB.
 
-Example Input
+## Example Input
 11 10 5
 2 3 4 5 2 2
 2 6 3 1 1 3
@@ -31,7 +31,7 @@ Example Input
 5 5 10 3 1 5
 4 3 5 5 2 6
 
-Example output 
+## Example output 
 move right
 move right
 move up
@@ -39,4 +39,4 @@ move up
 move up
 cut up
 move right
-pic
+
